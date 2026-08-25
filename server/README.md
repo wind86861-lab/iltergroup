@@ -56,6 +56,31 @@ Server runs on `http://localhost:3001`.
 Product images are uploaded via `multipart/form-data` with field name `image`.  
 Stored in `server/uploads/` and served at `/uploads/<filename>`.
 
+## Maintenance Scripts
+
+Plain CommonJS scripts that run against the database of whatever machine they
+are executed on. On the production server they live in `/opt/iltergroup/server/`.
+They read `DATABASE_URL` (and the Telegram keys) from `.env` — never hardcode
+credentials in them.
+
+| Script | What it does |
+|--------|--------------|
+| `import-data.js` | Wipes and re-imports the real catalogue: products, steps, partners, benefits, site config, footer links, section texts. **Destructive** — this is the recovery script to run if production data is lost. |
+| `seed.js` | Seeds demo/default content (steps, partners, benefits, sections). Used for a fresh install. |
+| `add-gerber.js` | One-off: adds a single baby-food product. Kept as a template for adding a product from the CLI. |
+| `test-telegram.js` | Sends a fake order notification to check `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` are wired up. Requires `dist/` to be built. |
+
+```bash
+cd /opt/iltergroup/server
+node import-data.js      # only when restoring lost data
+node test-telegram.js    # after changing Telegram settings
+```
+
+⚠️ `import-data.js` deletes rows before inserting. Back up `prisma/dev.db` first:
+```bash
+cp prisma/dev.db prisma/dev.db.bak-$(date +%F)
+```
+
 ## Production Upgrade
 
 For production, replace SQLite with PostgreSQL:

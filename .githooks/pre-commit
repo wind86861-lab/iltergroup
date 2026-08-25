@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Blocks committing secrets. Enable once per clone:
+#   git config core.hooksPath .githooks
+set -uo pipefail
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$staged" ] && exit 0
+
+fail=0
+
+# 1. Files that must never be tracked
+while IFS= read -r f; do
+  case "$f" in
+    *.env|.env|*/.env|*.env.local|*/.env.local|*.db|*.db-journal|*.pem|*id_rsa*|*id_ed25519*)
+      echo "BLOCKED: $f must not be committed"; fail=1 ;;
+  esac
+done <<< "$staged"
+
+# 2. Secret-looking values inside the staged content
+patterns=(
+  '[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}'          # Telegram bot token
+  'gh[pousr]_[A-Za-z0-9]{20,}'                # GitHub token
+  'sshpass[[:space:]]+-p[[:space:]]+["'"'"']'  # inline ssh password
+  '(PASSWORD|PASSWD|SECRET|TOKEN|API_KEY)[[:space:]]*=[[:space:]]*["'"'"'][^"'"'"'$][^"'"'"']{7,}'
+)
+for p in "${patterns[@]}"; do
+  if git diff --cached -U0 | grep -E '^\+' | grep -qE "$p"; then
+    echo "BLOCKED: staged content matches a secret pattern: $p"
+    fail=1
+  fi
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo
+  echo "Commit aborted. Move the value into .env (gitignored) and reference it"
+  echo "via process.env / \$VAR. Override only if you are certain: git commit --no-verify"
+  exit 1
+fi
+exit 0

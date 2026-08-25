@@ -165,6 +165,30 @@ ssh root@91.229.91.147 "cd /opt/iltergroup/app && rm -rf dist/* && tar xzf /tmp/
 
 ---
 
+## Secrets
+
+Nothing secret is tracked in git. The values live only in `server/.env` on each
+machine (gitignored) and in the shell environment.
+
+| Secret | Where it lives |
+|--------|----------------|
+| `JWT_SECRET` | `server/.env` |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | `server/.env` (local and on the server) |
+| Production server password | shell env `ILTER_SERVER_PASS`, never in a file in the repo |
+
+Enable the secret guard once per clone — it refuses commits containing `.env`
+files, database files, keys, or token-shaped strings:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Set the deploy password in your shell profile, not in the repo:
+
+```bash
+export ILTER_SERVER_PASS='...'
+```
+
 ## Environment Variables
 
 ### Backend (.env)

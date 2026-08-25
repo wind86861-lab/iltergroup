@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment / secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# SQLite database (live production data)
+*.db
+*.db-journal
+prisma/dev.db
+
+# Uploaded media (lives on the server)
+server/uploads/
+
+# Local archives / backups
+*.tar.gz
+*.zip
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

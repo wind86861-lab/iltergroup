@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  label       String
+  category    String
+  gradient    String
+  iconColor   String
+  image       String?
+  stock       Int      @default(0)
+  price       Int      @default(0)
+  isTop       Boolean  @default(false)
+  uzumLink    String?
+  features    String?  // JSON-stringified string[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  customer  String
+  phone     String
+  email     String   @default("")
+  items     String
+  total     Int
+  status    String   @default("pending")
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  comment   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Step {
+  id        Int      @id @default(autoincrement())
+  num       Int      // step number (1, 2, 3, 4...)
+  icon      String   // lucide icon name e.g. "ClipboardList"
+  title     String   // JSON-stringified Localized
+  text      String   // JSON-stringified Localized
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      String
+  color     String
+  image     String   // uploaded logo/icon path
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteConfig {
+  id        Int      @id @default(autoincrement())
+  phone     String   @default("+998 90 799 73 44")
+  email     String   @default("info@iltergroup.uz")
+  address   String   @default("")
+  tagline   String   @default("")
+  copyright String   @default("")
+  devBy     String   @default("")
+  devTeam   String   @default("")
+  updatedAt DateTime @updatedAt
+}
+
+model FooterLink {
+  id        Int      @id @default(autoincrement())
+  label     String
+  href      String
+  column    String   // "about" | "products" | "contacts"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Benefit {
+  id        Int      @id @default(autoincrement())
+  icon      String   // lucide icon name
+  title     String   // JSON-stringified Localized
+  text      String   // JSON-stringified Localized
+  color     String   @default("#0099FF")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SectionText {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // e.g. "why.title", "why.sub", "partners.title"
+  text      String   // JSON-stringified Localized
+  updatedAt DateTime @updatedAt
+}

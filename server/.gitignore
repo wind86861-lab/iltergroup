@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# SQLite database (NEVER commit or deploy this — it contains live data!)
+prisma/dev.db
+prisma/*.db
+prisma/*.db-journal
+
+# Logs
+*.log
+
+# Environment variables
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Never commit the real env file
+.env

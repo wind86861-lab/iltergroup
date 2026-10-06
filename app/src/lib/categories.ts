@@ -1,11 +1,12 @@
 /**
- * Centralized category management system
- * Categories are stored in localStorage and used throughout the app
+ * Product categories, stored on the server (`/api/categories`).
+ * A product references its category by `slug` (Product.category).
  */
 import type { Localized } from '../i18n/localized'
+import { API_BASE, getToken } from './api'
 
 export interface Category {
-  id: string
+  id: number
   name: Localized
   slug: string
   iconColor: string
@@ -13,137 +14,57 @@ export interface Category {
   order: number
 }
 
-const STORAGE_KEY = 'ilter_categories'
-const STORAGE_VERSION_KEY = 'ilter_categories_v'
-const CURRENT_VERSION = '2'
+export type CategoryInput = Omit<Category, 'id'>
 
-const DEFAULT_CATEGORIES: Category[] = [
-  {
-    id: 'baby-food',
-    name: { uz: "Bolalar ovqati", ru: "Детское питание", en: "Baby Food", tr: "Bebek mamaları" },
-    slug: 'baby-food',
-    iconColor: '#f97316',
-    gradient: 'from-orange-50 to-amber-100',
-    order: 1,
-  },
-  {
-    id: 'sauces',
-    name: { uz: "Souslar", ru: "Соусы", en: "Sauces", tr: "Soslar" },
-    slug: 'sauces',
-    iconColor: '#dc2626',
-    gradient: 'from-red-50 to-rose-100',
-    order: 2,
-  },
-  {
-    id: 'sweets',
-    name: { uz: "Shirinliklar", ru: "Сладости", en: "Sweets", tr: "Tatlılar" },
-    slug: 'sweets',
-    iconColor: '#9333ea',
-    gradient: 'from-purple-50 to-violet-100',
-    order: 3,
-  },
-  {
-    id: 'beverages',
-    name: { uz: "Ichimliklar", ru: "Напитки", en: "Beverages", tr: "İçecekler" },
-    slug: 'beverages',
-    iconColor: '#dc2626',
-    gradient: 'from-red-50 to-red-100',
-    order: 4,
-  },
-  {
-    id: 'groceries',
-    name: { uz: "Oziq-ovqat", ru: "Бакалея", en: "Groceries", tr: "Bakkaliye" },
-    slug: 'groceries',
-    iconColor: '#f59e0b',
-    gradient: 'from-yellow-50 to-amber-100',
-    order: 5,
-  },
-  {
-    id: 'snacks',
-    name: { uz: "Sneklar", ru: "Снеки", en: "Snacks", tr: "Cipsler" },
-    slug: 'snacks',
-    iconColor: '#eab308',
-    gradient: 'from-yellow-50 to-yellow-100',
-    order: 6,
-  },
-  {
-    id: 'dairy',
-    name: { uz: "Sut mahsulotlari", ru: "Молочные продукты", en: "Dairy", tr: "Süt ürünleri" },
-    slug: 'dairy',
-    iconColor: '#10b981',
-    gradient: 'from-green-50 to-emerald-100',
-    order: 7,
-  },
-  {
-    id: 'bread',
-    name: { uz: 'Non mahsulotlari', ru: 'Хлебобулочные', en: 'Bakery', tr: 'Fırın ürünleri' },
-    slug: 'bread',
-    iconColor: '#d97706',
-    gradient: 'from-amber-50 to-orange-100',
-    order: 8,
-  },
-  {
-    id: 'fruit',
-    name: { uz: 'Mevalar', ru: 'Фрукты', en: 'Fruits', tr: 'Meyveler' },
-    slug: 'fruit',
-    iconColor: '#059669',
-    gradient: 'from-emerald-50 to-green-100',
-    order: 9,
-  },
-]
+// Last list fetched from the API, so render-time lookups by slug stay synchronous.
+let cache: Category[] = []
 
-export function getCategories(): Category[] {
+// Older builds kept categories in the browser only; drop that stale copy.
+try {
+  localStorage.removeItem('ilter_categories')
+  localStorage.removeItem('ilter_categories_v')
+} catch { /* storage unavailable */ }
+
+async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers = new Headers(init.headers)
+  if (init.body) headers.set('Content-Type', 'application/json')
+  const token = getToken()
+  if (token && init.method && init.method !== 'GET') headers.set('Authorization', `Bearer ${token}`)
+  const res = await fetch(`${API_BASE}/api/categories${path}`, { ...init, headers })
+  if (!res.ok) {
+    let msg = res.statusText
+    try { msg = (await res.json()).error || msg } catch { /* ignore */ }
+    throw new Error(msg)
+  }
+  return res.json() as Promise<T>
+}
+
+export async function loadCategories(): Promise<Category[]> {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      const parsed = JSON.parse(stored) as Category[]
-      return parsed.sort((a, b) => a.order - b.order)
-    }
+    cache = await call<Category[]>('')
   } catch (err) {
-    console.warn('Failed to load categories from localStorage:', err)
+    console.warn('Failed to load categories:', err)
   }
-  return DEFAULT_CATEGORIES
+  return cache
 }
 
-export function saveCategories(categories: Category[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(categories))
-  } catch (err) {
-    console.error('Failed to save categories to localStorage:', err)
-  }
+export async function createCategory(input: CategoryInput): Promise<Category> {
+  const c = await call<Category>('', { method: 'POST', body: JSON.stringify(input) })
+  cache = [...cache, c]
+  return c
 }
 
-export function getCategoryById(id: string): Category | undefined {
-  return getCategories().find(c => c.id === id || c.slug === id)
+export async function updateCategory(id: number, input: CategoryInput): Promise<Category> {
+  const c = await call<Category>(`/${id}`, { method: 'PUT', body: JSON.stringify(input) })
+  cache = cache.map(x => (x.id === id ? c : x))
+  return c
 }
 
-export function getCategoryStyle(id: string): { bg: string; color: string } {
-  const cat = getCategoryById(id)
-  if (!cat) return { bg: '#e5e7eb', color: '#374151' }
-  return {
-    bg: cat.gradient,
-    color: cat.iconColor,
-  }
+export async function deleteCategory(id: number): Promise<void> {
+  await call<{ success: boolean }>(`/${id}`, { method: 'DELETE' })
+  cache = cache.filter(x => x.id !== id)
 }
 
-// Initialize default categories - reset on version change or corrupted data
-if (typeof window !== 'undefined') {
-  const storedVersion = localStorage.getItem(STORAGE_VERSION_KEY)
-  const stored = localStorage.getItem(STORAGE_KEY)
-  let needsReset = storedVersion !== CURRENT_VERSION || !stored
-  if (!needsReset && stored) {
-    try {
-      const parsed = JSON.parse(stored) as Category[]
-      // Reset if any category has a placeholder ID like cat_123... or 'test'
-      if (parsed.some(c => /^cat_\d+$/.test(c.id) || c.id === 'test' || !c.slug)) {
-        needsReset = true
-      }
-    } catch {
-      needsReset = true
-    }
-  }
-  if (needsReset) {
-    localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_VERSION)
-    saveCategories(DEFAULT_CATEGORIES)
-  }
+export function getCategoryBySlug(slug: string): Category | undefined {
+  return cache.find(c => c.slug === slug)
 }

@@ -1,20 +1,26 @@
-import { Router, Request, Response } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { Request, Response } from 'express'
+import { prisma } from '../lib/prisma'
+import { asyncRouter } from '../lib/asyncRouter'
+import { rateLimit } from '../lib/rateLimit'
+import { str } from '../lib/validate'
 import { protect } from '../middleware/auth'
 import { AuthRequest } from '../types'
 import { notifyMessage } from '../lib/telegram'
 
-const router = Router()
-const prisma = new PrismaClient()
+const router = asyncRouter()
+
+const createLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 10 })
 
 router.get('/', protect, async (_req: AuthRequest, res: Response) => {
   const messages = await prisma.message.findMany({ orderBy: { createdAt: 'desc' } })
   res.json(messages)
 })
 
-router.post('/', async (req: Request, res: Response) => {
-  const { name, phone, comment } = req.body
-  if (!name || !phone || !comment) return res.status(400).json({ error: 'Все поля обязательны' }) as unknown as void
+router.post('/', createLimiter, async (req: Request, res: Response) => {
+  const name = str(req.body.name, 120)
+  const phone = str(req.body.phone, 40)
+  const comment = str(req.body.comment, 3000)
+  if (!name || !phone || !comment) return void res.status(400).json({ error: 'Все поля обязательны' })
   const message = await prisma.message.create({ data: { name, phone, comment } })
   notifyMessage({
     id: message.id,

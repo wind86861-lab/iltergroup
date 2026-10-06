@@ -1,9 +1,8 @@
-import { Router } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
+import { asyncRouter } from '../lib/asyncRouter'
 import { protect } from '../middleware/auth'
 
-const prisma = new PrismaClient()
-const router = Router()
+const router = asyncRouter()
 
 function safeJsonParse(v: string): Record<string, string> {
   try { return JSON.parse(v) } catch { return {} }
@@ -23,6 +22,7 @@ router.get('/:key', async (req, res) => {
 })
 
 router.put('/:key', protect, async (req, res) => {
+  if (!/^[a-zA-Z0-9_.-]{1,64}$/.test(req.params.key)) return void res.status(400).json({ error: 'Invalid key' })
   const { text } = req.body
   const data = typeof text === 'string' ? text : JSON.stringify(text)
   const item = await prisma.sectionText.upsert({

@@ -15,7 +15,7 @@ cp .env.example .env
 # 3. Create DB and run migrations
 npx prisma migrate dev --name init
 
-# 4. Seed default admin + products
+# 4. Create the admin (prints a generated password, or uses ADMIN_PASSWORD)
 npm run db:seed
 
 # 5. Start dev server
@@ -24,13 +24,16 @@ npm run dev
 
 Server runs on `http://localhost:3001`.
 
-## Default Admin Credentials
-| Field | Value |
-|-------|-------|
-| Email | `admin@iltergroup.uz` |
-| Password | `admin123` |
+## Admin Credentials
+There is no default password. `npm run db:seed` prints a generated one. To set
+or reset a password (also on the server, from `dist/`):
 
-⚠️ Change the password after first login in production.
+```bash
+npm run admin:password -- admin@iltergroup.uz '<new password>'
+node dist/scripts/set-admin-password.js admin@iltergroup.uz '<new password>'
+```
+
+Logged-in admins can change their own password at `/admin/account`.
 
 ## API Endpoints
 
@@ -38,6 +41,9 @@ Server runs on `http://localhost:3001`.
 |--------|-------|------|-------------|
 | POST | `/api/auth/login` | — | Login, returns JWT |
 | GET | `/api/auth/me` | JWT | Current admin info |
+| POST | `/api/auth/password` | JWT | Change own password |
+| GET | `/api/categories` | — | Product categories |
+| POST/PUT/DELETE | `/api/categories[/:id]` | JWT | Manage categories |
 | GET | `/api/products` | — | All products (public) |
 | POST | `/api/products` | JWT | Create product (+ image upload) |
 | PUT | `/api/products/:id` | JWT | Update product |
@@ -53,8 +59,10 @@ Server runs on `http://localhost:3001`.
 
 ## Image Upload
 
-Product images are uploaded via `multipart/form-data` with field name `image`.  
-Stored in `server/uploads/` and served at `/uploads/<filename>`.
+Product images are uploaded via `multipart/form-data` with field name `image`.
+Only PNG, JPG, WEBP and GIF are accepted; the stored name is generated server
+side. Files live in `server/uploads/` and are served at `/uploads/<filename>`.
+Replaced or deleted product/partner images are removed from disk.
 
 ## Maintenance Scripts
 
@@ -65,25 +73,30 @@ credentials in them.
 
 | Script | What it does |
 |--------|--------------|
-| `import-data.js` | Wipes and re-imports the real catalogue: products, steps, partners, benefits, site config, footer links, section texts. **Destructive** — this is the recovery script to run if production data is lost. |
-| `seed.js` | Seeds demo/default content (steps, partners, benefits, sections). Used for a fresh install. |
+| `import-data.js` | Wipes and re-imports a May 2026 snapshot of the catalogue: products, steps, partners, benefits, site config, footer links, section texts. **Destructive and outdated** — restore from `/root/backups/iltergroup/` instead. Refuses to run without `CONFIRM_WIPE=yes`. |
+| `seed.js` | Seeds demo/default content (steps, partners, benefits, sections). Fresh installs only; refuses to run without `CONFIRM_WIPE=yes`. |
 | `add-gerber.js` | One-off: adds a single baby-food product. Kept as a template for adding a product from the CLI. |
 | `test-telegram.js` | Sends a fake order notification to check `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` are wired up. Requires `dist/` to be built. |
 
 ```bash
 cd /opt/iltergroup/server
-node import-data.js      # only when restoring lost data
 node test-telegram.js    # after changing Telegram settings
 ```
 
-⚠️ `import-data.js` deletes rows before inserting. Back up `prisma/dev.db` first:
+## Backups and restore
+
+`deploy/backup.sh` runs daily (cron, 03:30) and before every deploy, writing
+`/root/backups/iltergroup/db-<timestamp>.db.gz` and `uploads-<timestamp>.tar.gz`
+(14 days kept). To restore the database:
+
 ```bash
-cp prisma/dev.db prisma/dev.db.bak-$(date +%F)
+pm2 stop ilter-api
+gunzip -c /root/backups/iltergroup/db-<timestamp>.db.gz > /opt/iltergroup/server/prisma/dev.db
+pm2 start ilter-api
 ```
 
-## Production Upgrade
+## Database
 
-For production, replace SQLite with PostgreSQL:
-1. Change `schema.prisma` provider to `postgresql`
-2. Update `DATABASE_URL` in `.env`
-3. Run `npx prisma migrate deploy`
+Production runs on SQLite. If it ever outgrows it, switch `schema.prisma` to
+`postgresql`, point `DATABASE_URL` at the new database and run
+`npx prisma migrate deploy`, then copy the data over.

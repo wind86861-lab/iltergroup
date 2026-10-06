@@ -1,4 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
+
+// Destructive: deletes existing rows first. Refuse unless explicitly confirmed.
+if (process.env.CONFIRM_WIPE !== 'yes') {
+  console.error('This script DELETES existing data. Back up prisma/dev.db, then run:')
+  console.error('  CONFIRM_WIPE=yes node ' + require('path').basename(__filename))
+  process.exit(1);
+}
 const prisma = new PrismaClient();
 
 async function seed() {

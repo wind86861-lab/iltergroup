@@ -8,7 +8,7 @@ import {
   type Product, type ProductInput,
 } from '../../lib/api'
 import { productImage, FALLBACK_IMAGES } from '../../lib/images'
-import { getCategories, getCategoryById, type Category } from '../../lib/categories'
+import { loadCategories, getCategoryBySlug, type Category } from '../../lib/categories'
 
 const LANG_LABEL: Record<Lang, string> = { uz: 'UZ', ru: 'RU', en: 'EN', tr: 'TR' }
 
@@ -113,8 +113,8 @@ export default function ProductsPage() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    setCategories(getCategories())
     let alive = true
+    loadCategories().then(list => { if (alive) setCategories(list) })
     fetchProducts()
       .then(list => { if (alive) setProducts(list) })
       .catch(err => { if (alive) setError(err instanceof Error ? err.message : 'Ошибка загрузки') })
@@ -133,7 +133,7 @@ export default function ProductsPage() {
   })
 
   const openEdit = (p: Product) => { setIsNew(false); setEditing(draftFromProduct(p)); setEditLang(uiLang) }
-  const openNew = () => { setIsNew(true); setEditing({ ...BLANK_DRAFT }); setEditLang(uiLang) }
+  const openNew = () => { setIsNew(true); setEditing({ ...BLANK_DRAFT, category: categories[0]?.slug ?? '' }); setEditLang(uiLang) }
 
   const handleSave = async () => {
     if (!editing || !hasAnyText(editing.name)) return
@@ -243,9 +243,9 @@ export default function ProductsPage() {
           {categories.map(c => (
             <button
               key={c.id}
-              onClick={() => setCat(c.id)}
+              onClick={() => setCat(c.slug)}
               className="px-3.5 py-2 text-[13px] font-semibold rounded-xl border transition-all"
-              style={cat === c.id
+              style={cat === c.slug
                 ? { background: c.iconColor, color: '#fff', borderColor: c.iconColor }
                 : { background: '#fff', color: '#64748b', borderColor: '#e2e8f0' }}
             >
@@ -266,7 +266,7 @@ export default function ProductsPage() {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filtered.map(p => {
-            const category = getCategoryById(p.category)
+            const category = getCategoryBySlug(p.category)
             const displayName = pickLocale(p.name, uiLang)
             return (
               <div
@@ -435,7 +435,7 @@ export default function ProductsPage() {
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
                 >
                   {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>
+                    <option key={cat.id} value={cat.slug}>
                       {pickLocale(cat.name, uiLang)}
                     </option>
                   ))}

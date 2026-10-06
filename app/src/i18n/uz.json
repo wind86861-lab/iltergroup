@@ -150,15 +150,15 @@
       "footer": "Futer",
       "benefits": "Afzalliklar",
       "sections": "Matnlar",
-      "messages": "Xabarlar"
+      "messages": "Xabarlar",
+      "account": "Akkaunt"
     },
     "login": {
       "title": "IlterGroup Admin",
       "subtitle": "Boshqaruv paneli",
       "password": "Parol",
       "submit": "Panelga kirish",
-      "loading": "Kirish...",
-      "default": "Standart"
+      "loading": "Kirish..."
     },
     "common": {
       "add": "Qo'shish",
@@ -252,6 +252,15 @@
       "phone": "Telefon",
       "comment": "Izoh",
       "no_messages": "Xabarlar yo'q"
+    },
+    "account": {
+      "title": "Parolni o'zgartirish",
+      "current": "Joriy parol",
+      "new": "Yangi parol (kamida 10 belgi)",
+      "confirm": "Yangi parolni takrorlang",
+      "save": "Parolni o'zgartirish",
+      "saved": "Parol o'zgartirildi",
+      "mismatch": "Parollar mos kelmadi"
     }
   },
   "order": {

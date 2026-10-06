@@ -91,7 +91,7 @@ export default function PartnersPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Партнёры</h1>
           <p className="text-sm text-slate-400 mt-1">Секция "Bizning hamkorlar" — бегущая строка с партнёрами</p>
-          <p className="text-xs text-slate-300 mt-0.5">💡 Загрузите логотип партнёра (PNG, JPG, WEBP, SVG)</p>
+          <p className="text-xs text-slate-300 mt-0.5">💡 Загрузите логотип партнёра (PNG, JPG, WEBP)</p>
         </div>
         <button onClick={startNew} className="flex items-center gap-2 text-sm font-bold text-white bg-brand px-5 py-2.5 rounded-xl border-none cursor-pointer hover:bg-brand-dark transition-colors">
           <Plus className="w-4 h-4" /> Добавить
@@ -122,7 +122,7 @@ export default function PartnersPage() {
                 )}
               </div>
               <div className="flex-1">
-                <input ref={fileRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+                <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={handleImageSelect} className="hidden" />
                 <button
                   onClick={() => fileRef.current?.click()}
                   className="flex items-center gap-2 text-sm font-semibold text-slate-600 bg-slate-50 px-4 py-2.5 rounded-xl border-none cursor-pointer hover:bg-slate-100 transition-colors"
@@ -130,7 +130,7 @@ export default function PartnersPage() {
                   <Upload className="w-4 h-4" />
                   {imagePreview ? 'Заменить изображение' : 'Загрузить изображение'}
                 </button>
-                <p className="text-[11px] text-slate-400 mt-1">PNG, JPG, WEBP, SVG · макс. 5MB</p>
+                <p className="text-[11px] text-slate-400 mt-1">PNG, JPG, WEBP · макс. 5MB</p>
               </div>
             </div>
           </div>

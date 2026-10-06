@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Package, ShoppingBag, MessageSquare, Layers, ListOrdered, Users, PanelBottom, Award, Type,
-  LogOut, ExternalLink, Menu, X, Bell,
+  LogOut, ExternalLink, Menu, X, Bell, KeyRound,
 } from 'lucide-react'
 import logoWhite from '../../img/ilter-logo-white.png'
 import { logout, fetchMessages } from '../../lib/api'
@@ -23,6 +23,7 @@ function useNav(t: (k: string) => string) {
     { to: '/admin/benefits', label: t('admin.sidebar.benefits'), icon: Award, end: false },
     { to: '/admin/sections', label: t('admin.sidebar.sections'), icon: Type, end: false },
     { to: '/admin/messages', label: t('admin.sidebar.messages'), icon: MessageSquare, end: false },
+    { to: '/admin/account', label: t('admin.sidebar.account'), icon: KeyRound, end: false },
   ]
 }
 

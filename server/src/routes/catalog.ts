@@ -1,8 +1,8 @@
-import { Router } from 'express'
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
 import { protect } from '../middleware/auth'
+import { asyncRouter } from '../lib/asyncRouter'
 
 const UPLOAD_DIR = path.join(__dirname, '../../uploads')
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true })
@@ -26,7 +26,7 @@ const upload = multer({
   },
 })
 
-const router = Router()
+const router = asyncRouter()
 
 // GET /api/catalog — check if catalog exists
 router.get('/', (_req, res) => {

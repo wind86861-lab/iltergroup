@@ -150,15 +150,15 @@
       "footer": "Altbilgi",
       "benefits": "Avantajlar",
       "sections": "Metinler",
-      "messages": "Mesajlar"
+      "messages": "Mesajlar",
+      "account": "Hesap"
     },
     "login": {
       "title": "IlterGroup Admin",
       "subtitle": "Kontrol Paneli",
       "password": "Şifre",
       "submit": "Panele giriş",
-      "loading": "Giriş yapılıyor...",
-      "default": "Varsayılan"
+      "loading": "Giriş yapılıyor..."
     },
     "common": {
       "add": "Ekle",
@@ -252,6 +252,15 @@
       "phone": "Telefon",
       "comment": "Yorum",
       "no_messages": "Mesaj yok"
+    },
+    "account": {
+      "title": "Şifre değiştir",
+      "current": "Mevcut şifre",
+      "new": "Yeni şifre (en az 10 karakter)",
+      "confirm": "Yeni şifreyi tekrarlayın",
+      "save": "Şifreyi değiştir",
+      "saved": "Şifre değiştirildi",
+      "mismatch": "Şifreler eşleşmiyor"
     }
   },
   "order": {

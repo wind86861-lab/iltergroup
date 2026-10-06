@@ -15,7 +15,7 @@ This will start:
 - **Main Site**: http://localhost:5173
 - **Admin Panel**: http://localhost:5173/admin
   - Email: `admin@iltergroup.uz`
-  - Password: `admin123`
+  - Password: printed by `npm run db:seed` (or set one with `npm run admin:password -- admin@iltergroup.uz '<password>'`)
 
 ### 3. Stop Development Servers
 ```bash
@@ -88,8 +88,8 @@ iltergroup/
 
 ### Dynamic Categories System
 - **Admin**: Create/edit categories at `/admin/categories`
-- **Storage**: Categories stored in `localStorage`
-- **Connected**: Auto-updates in admin products page and frontend catalog
+- **Storage**: `Category` table, served by `/api/categories`
+- **Connected**: products reference a category by its `slug`; renaming a slug re-points its products, deleting a category that is still in use is refused
 
 ### Multi-language Support
 - Languages: Russian (RU), Uzbek (UZ), English (EN), Turkish (TR)
@@ -97,8 +97,9 @@ iltergroup/
 - Language switcher in navbar
 
 ### Admin Panel Features
-- **Products**: CRUD operations, image upload, multi-language
+- **Products**: CRUD operations, image upload (PNG/JPG/WEBP/GIF, 10 MB), multi-language
 - **Categories**: Full category management
+- **Account**: change the admin password at `/admin/account`
 - **Orders**: View customer orders
 - **Messages**: Contact form submissions
 
@@ -143,25 +144,24 @@ npm run db:seed
 
 ## Deployment
 
-### Build Frontend
-```bash
-cd app
-npm run build
-# Output: app/dist/
-```
-
 ### Deploy to Server
+Commit first, then:
 ```bash
-cd app
-tar czf /tmp/dist.tar.gz -C dist .
-scp /tmp/dist.tar.gz root@91.229.91.147:/tmp/
-ssh root@91.229.91.147 "cd /opt/iltergroup/app && rm -rf dist/* && tar xzf /tmp/dist.tar.gz -C dist"
+./deploy/deploy.sh
 ```
+It builds both apps, backs up the production database and uploads, syncs the
+committed code, runs `prisma migrate deploy`, restarts `ilter-api`, publishes
+the frontend and installs the nginx config and the daily backup cron. It never
+copies `prisma/dev.db`, `uploads/` or `.env`. Only add migrations that are
+additive (new tables/columns) — production data must survive every deploy.
 
 ### Production Server
 - URL: https://iltergroup.uz
-- Server: 91.229.91.147
-- Path: `/opt/iltergroup/app/dist`
+- Server: 91.229.91.147 (Node 18, pm2 app `ilter-api`, nginx)
+- Paths: `/opt/iltergroup/app/dist`, `/opt/iltergroup/server`
+- Database: `/opt/iltergroup/server/prisma/dev.db` (SQLite)
+- Backups: `/root/backups/iltergroup/` daily at 03:30, kept 14 days (`deploy/backup.sh`)
+- The API listens on 127.0.0.1:3001 only; nginx config lives in `deploy/nginx-iltergroup.conf`
 
 ---
 
@@ -197,13 +197,12 @@ DATABASE_URL="file:./dev.db"
 JWT_SECRET="your-secret-key"
 PORT=3001
 FRONTEND_URL="http://localhost:5173"
+HOST="127.0.0.1"
 ```
 
 ### Frontend
-Set in `.env` or use defaults:
-```env
-VITE_API_URL=http://localhost:3001
-```
+No env needed: in dev Vite proxies `/api` and `/uploads` to `localhost:3001`
+(see `vite.config.ts`), in production nginx does the same.
 
 ---
 
@@ -221,7 +220,7 @@ VITE_API_URL=http://localhost:3001
 - Node.js + Express
 - TypeScript
 - Prisma ORM
-- SQLite (dev) / PostgreSQL (prod)
+- SQLite (dev and prod)
 - JWT Authentication
 - Multer (file uploads)
 

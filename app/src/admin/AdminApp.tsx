@@ -11,8 +11,9 @@ import PartnersPage from './pages/PartnersPage'
 import FooterPage from './pages/FooterPage'
 import BenefitsPage from './pages/BenefitsPage'
 import SectionsPage from './pages/SectionsPage'
+import AccountPage from './pages/AccountPage'
 import AdminLayout from './components/AdminLayout'
-import { isAuthenticated, logout, API_BASE } from '../lib/api'
+import { isAuthenticated, logout, getToken, API_BASE } from '../lib/api'
 
 function ProtectedRoute() {
   const [checked, setChecked] = useState(false)
@@ -26,7 +27,7 @@ function ProtectedRoute() {
     }
     // Validate token with server
     fetch(`${API_BASE}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('ilter_admin_token')}` }
+      headers: { Authorization: `Bearer ${getToken()}` }
     })
       .then(r => {
         if (!r.ok) {
@@ -74,6 +75,7 @@ export default function AdminApp() {
           <Route path="benefits" element={<BenefitsPage />} />
           <Route path="sections" element={<SectionsPage />} />
           <Route path="messages" element={<MessagesPage />} />
+          <Route path="account" element={<AccountPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />

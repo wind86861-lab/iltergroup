@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer'
 import { fetchProducts, type Product } from '../../lib/api'
 import { productImage } from '../../lib/images'
 import { pickLocale } from '../../i18n/localized'
-import { getCategories, getCategoryById, type Category } from '../../lib/categories'
+import { loadCategories, getCategoryBySlug, type Category } from '../../lib/categories'
 import SectionTag from '../ui/SectionTag'
 import OrderModal from '../ui/OrderModal'
 
@@ -22,8 +22,8 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setCategories(getCategories())
     let alive = true
+    loadCategories().then(list => { if (alive) setCategories(list) })
     fetchProducts()
       .then(list => { if (alive) setAllProducts(list) })
       .catch(() => { /* ignore */ })
@@ -76,13 +76,13 @@ export default function Catalog() {
           {categories.map((cat) => (
             <motion.button
               key={cat.id}
-              onClick={() => setActiveTab(cat.id)}
+              onClick={() => setActiveTab(cat.slug)}
               whileTap={{ scale: 0.95 }}
-              className={`text-[13.5px] font-semibold px-5 py-2.5 rounded-full border font-body cursor-pointer transition-all duration-200 ${activeTab === cat.id
+              className={`text-[13.5px] font-semibold px-5 py-2.5 rounded-full border font-body cursor-pointer transition-all duration-200 ${activeTab === cat.slug
                 ? 'text-white border-transparent shadow-brand'
                 : 'bg-surface-sand text-ink-muted border-transparent hover:border-brand/30 hover:text-ink'
                 }`}
-              style={activeTab === cat.id ? { background: cat.iconColor } : {}}
+              style={activeTab === cat.slug ? { background: cat.iconColor } : {}}
             >
               {pickLocale(cat.name, i18n.language)}
             </motion.button>
@@ -133,13 +133,8 @@ function ProductCard({ product, onOpen, onOrder }: CardProps) {
   const name = pickLocale(product.name, lang)
   const label = pickLocale(product.label, lang)
   const catLabel = (() => {
-    try {
-      const categories = JSON.parse(localStorage.getItem('ilter_categories') || '[]')
-      const cat = categories.find((c: any) => c.slug === product.category)
-      if (cat?.name) {
-        return cat.name[lang as 'uz' | 'ru' | 'en' | 'tr'] || cat.name.ru
-      }
-    } catch { }
+    const cat = getCategoryBySlug(product.category)
+    if (cat) return pickLocale(cat.name, lang)
     const key = `catalog.${product.category}`
     const resolved = t(key)
     // Strip 'catalog.' prefix if present
@@ -227,13 +222,8 @@ function ProductModal({ product, onClose, onRequest }: ModalProps) {
   const desc = product ? pickLocale(product.description, lang) : ''
   const categoryLabel = (() => {
     if (!product) return ''
-    try {
-      const categories = JSON.parse(localStorage.getItem('ilter_categories') || '[]')
-      const cat = categories.find((c: any) => c.slug === product.category)
-      if (cat?.name) {
-        return (cat.name[lang as 'uz' | 'ru' | 'en' | 'tr'] || cat.name.ru || product.category).toUpperCase()
-      }
-    } catch { }
+    const cat = getCategoryBySlug(product.category)
+    if (cat) return (pickLocale(cat.name, lang) || product.category).toUpperCase()
     return (t(`catalog.${product.category}`) || product.category).toUpperCase()
   })()
 

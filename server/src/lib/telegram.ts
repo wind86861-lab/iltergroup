@@ -14,13 +14,12 @@
 
 import https from 'https'
 
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN || ''
-const CHAT_ID = process.env.TELEGRAM_CHAT_ID || ''
-const ENABLED = TOKEN && CHAT_ID
-
 function send(text: string): Promise<void> {
+  // Read at call time so the values from .env are always picked up.
+  const TOKEN = process.env.TELEGRAM_BOT_TOKEN || ''
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID || ''
   return new Promise((resolve, reject) => {
-    if (!ENABLED) {
+    if (!TOKEN || !CHAT_ID) {
       console.warn('[Telegram] Not configured — set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID')
       return resolve()
     }
@@ -124,4 +123,5 @@ function escapeHtml(text: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }

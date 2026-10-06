@@ -91,6 +91,7 @@ export interface ApiProduct {
   image: string | null
   stock: number
   price: number
+  isTop?: boolean
   uzumLink?: string | null
   features?: string | null  // JSON-stringified Localized[]
   createdAt: string
@@ -176,7 +177,7 @@ function fromApi(p: ApiProduct): Product {
     description: parseLocalized(p.description),
     label: parseLocalized(p.label),
     category: p.category,
-    isTop: (p as any).isTop ?? false,
+    isTop: p.isTop ?? false,
     uzumLink: p.uzumLink || undefined,
     features,
   }
@@ -194,6 +195,12 @@ export async function login(email: string, password: string): Promise<{ token: s
 }
 
 export const logout = () => clearToken()
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  await request<{ success: boolean }>('/api/auth/password', {
+    method: 'POST', body: JSON.stringify({ currentPassword, newPassword }),
+  }, true)
+}
 export const isAuthenticated = () => !!getToken()
 
 /* ── Products ── */

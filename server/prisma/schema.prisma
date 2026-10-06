@@ -114,3 +114,14 @@ model SectionText {
   text      String   // JSON-stringified Localized
   updatedAt DateTime @updatedAt
 }
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique // stored in Product.category
+  name      String   // JSON-stringified Localized
+  iconColor String   @default("#004FF1")
+  gradient  String   @default("from-blue-50 to-cyan-100")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

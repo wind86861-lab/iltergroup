@@ -1,9 +1,8 @@
-import { Router } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
+import { asyncRouter } from '../lib/asyncRouter'
 import { protect } from '../middleware/auth'
 
-const prisma = new PrismaClient()
-const router = Router()
+const router = asyncRouter()
 
 function safeJsonParse(v: string): Record<string, string> {
   try { return JSON.parse(v) } catch { return {} }

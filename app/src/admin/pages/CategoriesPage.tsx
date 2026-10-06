@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Plus, Edit2, Trash2, Save, X, Package } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getCategories, saveCategories, type Category } from '../../lib/categories'
+import { loadCategories, createCategory, updateCategory, deleteCategory, type Category } from '../../lib/categories'
 import { EMPTY_LOCALIZED } from '../../i18n/localized'
 
-const BLANK: Omit<Category, 'id'> = {
+const BLANK: Category = {
+  id: 0,
   name: { ...EMPTY_LOCALIZED },
   slug: '',
   iconColor: '#004FF1',
@@ -16,31 +17,45 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [editing, setEditing] = useState<Category | null>(null)
   const [isNew, setIsNew] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setCategories(getCategories())
+    loadCategories().then(list => setCategories([...list]))
   }, [])
 
-  const save = (cat: Category) => {
-    const updated = isNew
-      ? [...categories, cat]
-      : categories.map(c => (c.id === cat.id ? cat : c))
-    setCategories(updated)
-    saveCategories(updated)
-    setEditing(null)
-    setIsNew(false)
+  const sorted = (list: Category[]) => [...list].sort((a, b) => a.order - b.order || a.id - b.id)
+
+  const save = async (cat: Category) => {
+    setSaving(true)
+    setError(null)
+    try {
+      const { id, ...input } = cat
+      const saved = isNew ? await createCategory(input) : await updateCategory(id, input)
+      setCategories(prev => sorted(isNew ? [...prev, saved] : prev.map(c => (c.id === saved.id ? saved : c))))
+      setEditing(null)
+      setIsNew(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ошибка сохранения')
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const remove = (id: string) => {
+  const remove = async (id: number) => {
     if (!confirm('Удалить категорию?')) return
-    const updated = categories.filter(c => c.id !== id)
-    setCategories(updated)
-    saveCategories(updated)
+    try {
+      await deleteCategory(id)
+      setCategories(prev => prev.filter(c => c.id !== id))
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка удаления')
+    }
   }
 
   const handleNew = () => {
-    setEditing({ ...BLANK, id: 'cat_' + Date.now() })
+    setEditing({ ...BLANK, name: { ...EMPTY_LOCALIZED } })
     setIsNew(true)
+    setError(null)
   }
 
   return (
@@ -84,7 +99,7 @@ export default function CategoriesPage() {
               </div>
               <div className="flex gap-1">
                 <button
-                  onClick={() => { setEditing(cat); setIsNew(false) }}
+                  onClick={() => { setEditing(cat); setIsNew(false); setError(null) }}
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
@@ -150,7 +165,7 @@ export default function CategoriesPage() {
                     value={editing.slug}
                     onChange={e => setEditing({ ...editing, slug: e.target.value })}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-                    placeholder="bread, sweet, fruit..."
+                    placeholder="bread, sweets, fruit... (латиница, цифры, дефис)"
                   />
                 </div>
 
@@ -250,6 +265,10 @@ export default function CategoriesPage() {
                 </div>
               </div>
 
+              {error && (
+                <p className="px-6 pb-2 text-sm text-red-600">{error}</p>
+              )}
+
               {/* Modal Footer */}
               <div className="px-6 py-4 border-t border-slate-100 flex gap-3">
                 <button
@@ -260,7 +279,7 @@ export default function CategoriesPage() {
                 </button>
                 <button
                   onClick={() => save(editing)}
-                  disabled={!editing.slug || !editing.name.ru}
+                  disabled={saving || !editing.slug || !editing.name.ru}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50"
                   style={{ background: '#004FF1' }}
                 >

@@ -11,7 +11,7 @@ const LOGIN_LANG_LABEL: Record<Lang, string> = { uz: 'UZ', ru: 'RU', en: 'EN', t
 export default function LoginPage() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const [email, setEmail] = useState('admin@iltergroup.uz')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState('')
@@ -115,10 +115,6 @@ export default function LoginPage() {
             >
               {loading ? t('admin.login.loading') : t('admin.login.submit')}
             </button>
-
-            <p className="text-center text-[12px] text-slate-400 pt-2">
-              {t('admin.login.default')}: <span className="text-slate-600 font-mono">admin@iltergroup.uz</span> / <span className="text-slate-600 font-mono">admin123</span>
-            </p>
           </form>
         </div>
       </div>

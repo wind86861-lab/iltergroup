@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { Plus, Trash2, Pencil, Save, X, Upload, Image } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { fetchPartners, createPartner, updatePartner, deletePartner, type ApiPartner, API_BASE } from '../../lib/api'
+import ImageAdvice, { IMAGE_SPECS } from '../components/ImageAdvice'
 
 const DEFAULT_COLORS = ['#004FF1', '#004FF1', '#e63946', '#1d3557', '#6d4c41', '#388e3c', '#7b2d8b', '#f59e0b', '#ef4444', '#8b5cf6']
 
@@ -11,6 +13,7 @@ function imageUrl(src: string) {
 }
 
 export default function PartnersPage() {
+  const { t } = useTranslation()
   const [partners, setPartners] = useState<ApiPartner[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<ApiPartner | null>(null)
@@ -91,7 +94,7 @@ export default function PartnersPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Партнёры</h1>
           <p className="text-sm text-slate-400 mt-1">Секция "Bizning hamkorlar" — бегущая строка с партнёрами</p>
-          <p className="text-xs text-slate-300 mt-0.5">💡 Загрузите логотип партнёра (PNG, JPG, WEBP)</p>
+          <p className="text-xs text-slate-300 mt-0.5">💡 {t('admin.images.partner_hint')}</p>
         </div>
         <button onClick={startNew} className="flex items-center gap-2 text-sm font-bold text-white bg-brand px-5 py-2.5 rounded-xl border-none cursor-pointer hover:bg-brand-dark transition-colors">
           <Plus className="w-4 h-4" /> Добавить
@@ -130,7 +133,7 @@ export default function PartnersPage() {
                   <Upload className="w-4 h-4" />
                   {imagePreview ? 'Заменить изображение' : 'Загрузить изображение'}
                 </button>
-                <p className="text-[11px] text-slate-400 mt-1">PNG, JPG, WEBP · макс. 5MB</p>
+                <ImageAdvice spec={IMAGE_SPECS.partner} file={imageFile} />
               </div>
             </div>
           </div>

@@ -213,7 +213,7 @@
       "uzum_link": "Uzum link",
       "features": "Features",
       "add_feature": "Add",
-      "upload_photo_formats": "PNG, JPG, WebP · drag or click",
+      "upload_photo_formats": "JPG, WebP, PNG · drag or click",
       "top_product": "Show on homepage (Top product)",
       "top_desc": "Marked products will appear in Hero slider",
       "placeholder_name": "Product name",
@@ -261,6 +261,15 @@
       "save": "Change password",
       "saved": "Password changed",
       "mismatch": "Passwords do not match"
+    },
+    "images": {
+      "product_hint": "Recommended: 1200×900 px (4:3), JPG or WebP, up to 300 KB. Keep the product centred — card edges are cropped. Use PNG only for a transparent background.",
+      "partner_hint": "Recommended: square 256×256 px, PNG with transparent background, up to 100 KB.",
+      "catalog_hint": "PDF up to 20 MB. For fast downloads keep it under 10 MB.",
+      "selected": "Selected: {{w}}×{{h}} px, {{kb}} KB",
+      "warn_heavy": "Heavy file — the site will load slower. Compress to {{max}} KB (e.g. squoosh.app or tinypng.com).",
+      "warn_ratio": "Not {{ratio}} — part of the image will be cropped.",
+      "warn_small": "Small image — it will look blurry. Width should be at least {{min}} px."
     }
   },
   "order": {

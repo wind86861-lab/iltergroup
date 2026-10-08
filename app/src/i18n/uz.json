@@ -213,7 +213,7 @@
       "uzum_link": "Uzum havolasi",
       "features": "Xususiyatlar",
       "add_feature": "Qo'shish",
-      "upload_photo_formats": "PNG, JPG, WebP · sudrab olib keling yoki bosing",
+      "upload_photo_formats": "JPG, WebP, PNG · sudrab olib keling yoki bosing",
       "top_product": "Bosh sahifada ko'rsatish (Top mahsulot)",
       "top_desc": "Belgilangan mahsulotlar Hero slyderida ko'rsatiladi",
       "placeholder_name": "Mahsulot nomi",
@@ -261,6 +261,15 @@
       "save": "Parolni o'zgartirish",
       "saved": "Parol o'zgartirildi",
       "mismatch": "Parollar mos kelmadi"
+    },
+    "images": {
+      "product_hint": "Tavsiya: 1200×900 px (4:3), JPG yoki WebP, 300 KB gacha. Asosiy obyekt markazda bo'lsin — kartochkada chetlari qirqiladi. PNG faqat shaffof fon kerak bo'lsa.",
+      "partner_hint": "Tavsiya: kvadrat 256×256 px, shaffof fonli PNG, 100 KB gacha.",
+      "catalog_hint": "PDF 20 MB gacha. Mijozlar tez yuklab olishi uchun 10 MB dan oshmagani yaxshi.",
+      "selected": "Tanlandi: {{w}}×{{h}} px, {{kb}} KB",
+      "warn_heavy": "Fayl og'ir — sayt sekin yuklanadi. {{max}} KB gacha siqing (masalan, squoosh.app yoki tinypng.com).",
+      "warn_ratio": "Proporsiya {{ratio}} emas — rasmning bir qismi qirqiladi.",
+      "warn_small": "Rasm kichik — saytda xira ko'rinadi. Eni kamida {{min}} px bo'lsin."
     }
   },
   "order": {

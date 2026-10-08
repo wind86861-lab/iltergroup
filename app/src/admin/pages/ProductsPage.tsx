@@ -9,6 +9,7 @@ import {
 } from '../../lib/api'
 import { productImage, FALLBACK_IMAGES } from '../../lib/images'
 import { loadCategories, getCategoryBySlug, type Category } from '../../lib/categories'
+import ImageAdvice, { IMAGE_SPECS } from '../components/ImageAdvice'
 
 const LANG_LABEL: Record<Lang, string> = { uz: 'UZ', ru: 'RU', en: 'EN', tr: 'TR' }
 
@@ -358,7 +359,7 @@ export default function ProductsPage() {
                 <label className="block text-[13px] font-semibold text-slate-700 mb-2">{t('admin.products.photo')}</label>
                 <div
                   className="relative rounded-2xl overflow-hidden cursor-pointer border-2 transition-colors"
-                  style={{ aspectRatio: '16/9', borderColor: dragOver ? '#004FF1' : '#e2e8f0', borderStyle: 'dashed' }}
+                  style={{ aspectRatio: '4/3', borderColor: dragOver ? '#004FF1' : '#e2e8f0', borderStyle: 'dashed' }}
                   onDragOver={e => { e.preventDefault(); setDragOver(true) }}
                   onDragLeave={() => setDragOver(false)}
                   onDrop={onDrop}
@@ -382,8 +383,9 @@ export default function ProductsPage() {
                     </div>
                   )}
                 </div>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden"
                   onChange={e => { const f = e.target.files?.[0]; if (f) pickImage(f); e.target.value = '' }} />
+                <ImageAdvice spec={IMAGE_SPECS.product} file={editing.imageFile} />
               </div>
 
               {/* Name */}

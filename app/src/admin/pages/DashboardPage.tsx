@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Package, ShoppingBag, MessageSquare, TrendingUp, Clock, CheckCircle, XCircle, Truck, ArrowRight, FileText, Upload, Trash2, Download, ListOrdered, Users, PanelBottom, Award, Sparkles } from 'lucide-react'
 import { fetchProducts, fetchOrders, fetchMessages, fetchCatalog, uploadCatalog, deleteCatalog, fetchSteps, fetchPartners, fetchBenefits, type Product, type ApiOrder, type ApiMessage, type CatalogInfo, API_BASE } from '../../lib/api'
 import { OrderStatus } from '../types'
+import { useTranslation } from 'react-i18next'
 
 const STATUS: Record<OrderStatus, { label: string; bg: string; color: string; Icon: React.ElementType }> = {
   pending: { label: 'Ожидает', bg: '#fefce8', color: '#a16207', Icon: Clock },
@@ -22,6 +23,7 @@ function timeAgo(d: string) {
 }
 
 export default function DashboardPage() {
+  const { t } = useTranslation()
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<ApiOrder[]>([])
   const [messages, setMessages] = useState<ApiMessage[]>([])
@@ -221,6 +223,7 @@ export default function DashboardPage() {
                 </button>
               </div>
             )}
+            <p className="text-[11.5px] text-slate-400 mt-2">{t('admin.images.catalog_hint')}</p>
             <input
               ref={fileRef}
               type="file"

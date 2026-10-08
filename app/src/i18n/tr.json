@@ -213,7 +213,7 @@
       "uzum_link": "Uzum bağlantısı",
       "features": "Özellikler",
       "add_feature": "Ekle",
-      "upload_photo_formats": "PNG, JPG, WebP · sürükleyin veya tıklayın",
+      "upload_photo_formats": "JPG, WebP, PNG · sürükleyin veya tıklayın",
       "top_product": "Ana sayfada göster (Top ürün)",
       "top_desc": "İşaretlenen ürünler Hero slider'ında görünecek",
       "placeholder_name": "Ürün adı",
@@ -261,6 +261,15 @@
       "save": "Şifreyi değiştir",
       "saved": "Şifre değiştirildi",
       "mismatch": "Şifreler eşleşmiyor"
+    },
+    "images": {
+      "product_hint": "Önerilen: 1200×900 px (4:3), JPG veya WebP, en fazla 300 KB. Ürünü ortalayın — kart kenarları kırpılır. PNG yalnızca şeffaf arka plan gerekirse.",
+      "partner_hint": "Önerilen: kare 256×256 px, şeffaf arka planlı PNG, en fazla 100 KB.",
+      "catalog_hint": "PDF en fazla 20 MB. Hızlı indirme için 10 MB altı önerilir.",
+      "selected": "Seçildi: {{w}}×{{h}} px, {{kb}} KB",
+      "warn_heavy": "Dosya ağır — site yavaş yüklenir. {{max}} KB altına sıkıştırın (ör. squoosh.app veya tinypng.com).",
+      "warn_ratio": "Oran {{ratio}} değil — görüntünün bir kısmı kırpılacak.",
+      "warn_small": "Görüntü küçük — sitede bulanık görünür. Genişlik en az {{min}} px olmalı."
     }
   },
   "order": {

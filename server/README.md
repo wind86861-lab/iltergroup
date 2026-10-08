@@ -33,7 +33,8 @@ npm run admin:password -- admin@iltergroup.uz '<new password>'
 node dist/scripts/set-admin-password.js admin@iltergroup.uz '<new password>'
 ```
 
-Logged-in admins can change their own password at `/admin/account`.
+The admin panel deliberately has no way to change the account: the login and
+password can only be changed on the server with this script.
 
 ## API Endpoints
 
@@ -41,7 +42,6 @@ Logged-in admins can change their own password at `/admin/account`.
 |--------|-------|------|-------------|
 | POST | `/api/auth/login` | — | Login, returns JWT |
 | GET | `/api/auth/me` | JWT | Current admin info |
-| POST | `/api/auth/password` | JWT | Change own password |
 | GET | `/api/categories` | — | Product categories |
 | POST/PUT/DELETE | `/api/categories[/:id]` | JWT | Manage categories |
 | GET | `/api/products` | — | All products (public) |

@@ -40,25 +40,4 @@ router.get('/me', protect, async (req: AuthRequest, res: Response) => {
   res.json(admin)
 })
 
-router.post('/password', protect, loginLimiter, async (req: AuthRequest, res: Response) => {
-  const { currentPassword, newPassword } = req.body
-  if (typeof currentPassword !== 'string' || typeof newPassword !== 'string') {
-    return void res.status(400).json({ error: 'Укажите текущий и новый пароль' })
-  }
-  if (newPassword.length < 10) {
-    return void res.status(400).json({ error: 'Новый пароль должен быть не короче 10 символов' })
-  }
-
-  const admin = await prisma.admin.findUnique({ where: { id: req.adminId } })
-  if (!admin || !(await bcrypt.compare(currentPassword, admin.password))) {
-    return void res.status(400).json({ error: 'Текущий пароль неверен' })
-  }
-
-  await prisma.admin.update({
-    where: { id: admin.id },
-    data: { password: await bcrypt.hash(newPassword, 12) },
-  })
-  res.json({ success: true })
-})
-
 export default router

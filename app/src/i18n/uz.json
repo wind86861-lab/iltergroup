@@ -150,8 +150,7 @@
       "footer": "Futer",
       "benefits": "Afzalliklar",
       "sections": "Matnlar",
-      "messages": "Xabarlar",
-      "account": "Akkaunt"
+      "messages": "Xabarlar"
     },
     "login": {
       "title": "IlterGroup Admin",
@@ -252,15 +251,6 @@
       "phone": "Telefon",
       "comment": "Izoh",
       "no_messages": "Xabarlar yo'q"
-    },
-    "account": {
-      "title": "Parolni o'zgartirish",
-      "current": "Joriy parol",
-      "new": "Yangi parol (kamida 10 belgi)",
-      "confirm": "Yangi parolni takrorlang",
-      "save": "Parolni o'zgartirish",
-      "saved": "Parol o'zgartirildi",
-      "mismatch": "Parollar mos kelmadi"
     },
     "images": {
       "selected": "Tanlandi: {{w}}×{{h}} px, {{kb}} KB",

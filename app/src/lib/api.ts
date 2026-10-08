@@ -195,12 +195,6 @@ export async function login(email: string, password: string): Promise<{ token: s
 }
 
 export const logout = () => clearToken()
-
-export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
-  await request<{ success: boolean }>('/api/auth/password', {
-    method: 'POST', body: JSON.stringify({ currentPassword, newPassword }),
-  }, true)
-}
 export const isAuthenticated = () => !!getToken()
 
 /* ── Products ── */

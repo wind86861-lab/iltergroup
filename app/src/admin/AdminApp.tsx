@@ -11,7 +11,6 @@ import PartnersPage from './pages/PartnersPage'
 import FooterPage from './pages/FooterPage'
 import BenefitsPage from './pages/BenefitsPage'
 import SectionsPage from './pages/SectionsPage'
-import AccountPage from './pages/AccountPage'
 import AdminLayout from './components/AdminLayout'
 import { isAuthenticated, logout, getToken, API_BASE } from '../lib/api'
 
@@ -75,7 +74,6 @@ export default function AdminApp() {
           <Route path="benefits" element={<BenefitsPage />} />
           <Route path="sections" element={<SectionsPage />} />
           <Route path="messages" element={<MessagesPage />} />
-          <Route path="account" element={<AccountPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />

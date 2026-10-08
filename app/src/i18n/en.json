@@ -150,8 +150,7 @@
       "footer": "Footer",
       "benefits": "Benefits",
       "sections": "Texts",
-      "messages": "Messages",
-      "account": "Account"
+      "messages": "Messages"
     },
     "login": {
       "title": "IlterGroup Admin",
@@ -252,15 +251,6 @@
       "phone": "Phone",
       "comment": "Comment",
       "no_messages": "No messages"
-    },
-    "account": {
-      "title": "Change password",
-      "current": "Current password",
-      "new": "New password (at least 10 characters)",
-      "confirm": "Repeat new password",
-      "save": "Change password",
-      "saved": "Password changed",
-      "mismatch": "Passwords do not match"
     },
     "images": {
       "selected": "Selected: {{w}}×{{h}} px, {{kb}} KB",

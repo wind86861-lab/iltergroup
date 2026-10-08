@@ -99,7 +99,7 @@ iltergroup/
 ### Admin Panel Features
 - **Products**: CRUD operations, image upload (PNG/JPG/WEBP/GIF, 10 MB), multi-language
 - **Categories**: Full category management
-- **Account**: change the admin password at `/admin/account`
+- **Account**: cannot be changed from the panel — only on the server via `set-admin-password`
 - **Orders**: View customer orders
 - **Messages**: Contact form submissions
 

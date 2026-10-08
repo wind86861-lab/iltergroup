@@ -263,13 +263,32 @@
       "mismatch": "Parollar mos kelmadi"
     },
     "images": {
-      "product_hint": "Tavsiya: 1200×900 px (4:3), JPG yoki WebP, 300 KB gacha. Asosiy obyekt markazda bo'lsin — kartochkada chetlari qirqiladi. PNG faqat shaffof fon kerak bo'lsa.",
-      "partner_hint": "Tavsiya: kvadrat 256×256 px, shaffof fonli PNG, 100 KB gacha.",
-      "catalog_hint": "PDF 20 MB gacha. Mijozlar tez yuklab olishi uchun 10 MB dan oshmagani yaxshi.",
       "selected": "Tanlandi: {{w}}×{{h}} px, {{kb}} KB",
       "warn_heavy": "Fayl og'ir — sayt sekin yuklanadi. {{max}} KB gacha siqing (masalan, squoosh.app yoki tinypng.com).",
       "warn_ratio": "Proporsiya {{ratio}} emas — rasmning bir qismi qirqiladi.",
-      "warn_small": "Rasm kichik — saytda xira ko'rinadi. Eni kamida {{min}} px bo'lsin."
+      "warn_small": "Rasm kichik — saytda xira ko'rinadi. Eni kamida {{min}} px bo'lsin.",
+      "note_title": "Yuklashdan oldin o'qing",
+      "label_size": "O'lcham:",
+      "label_format": "Format:",
+      "label_weight": "Hajm:",
+      "label_tip": "Maslahat:",
+      "product": {
+        "size": "1200 × 900 px (eni:bo'yi = 4:3)",
+        "format": "JPG yoki WebP (PNG — faqat shaffof fon kerak bo'lsa)",
+        "weight": "300 KB gacha (maksimum 10 MB)",
+        "tip": "Mahsulot markazda bo'lsin — saytda chetlari qirqiladi. Og'ir rasmni squoosh.app yoki tinypng.com da siqing."
+      },
+      "partner": {
+        "size": "256 × 256 px (kvadrat)",
+        "format": "PNG, shaffof fon bilan",
+        "weight": "100 KB gacha (maksimum 5 MB)",
+        "tip": "Logotip rangli fonda kichik kvadratda ko'rinadi — ortiqcha bo'sh joysiz qirqing."
+      },
+      "catalog": {
+        "format": "PDF",
+        "weight": "10 MB gacha tavsiya (maksimum 20 MB)",
+        "tip": "Katta PDF ni ilovepdf.com da siqing — mijozlar tez yuklab oladi."
+      }
     }
   },
   "order": {

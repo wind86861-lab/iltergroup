@@ -94,7 +94,6 @@ export default function PartnersPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Партнёры</h1>
           <p className="text-sm text-slate-400 mt-1">Секция "Bizning hamkorlar" — бегущая строка с партнёрами</p>
-          <p className="text-xs text-slate-300 mt-0.5">💡 {t('admin.images.partner_hint')}</p>
         </div>
         <button onClick={startNew} className="flex items-center gap-2 text-sm font-bold text-white bg-brand px-5 py-2.5 rounded-xl border-none cursor-pointer hover:bg-brand-dark transition-colors">
           <Plus className="w-4 h-4" /> Добавить

@@ -4,6 +4,7 @@ import { Package, ShoppingBag, MessageSquare, TrendingUp, Clock, CheckCircle, XC
 import { fetchProducts, fetchOrders, fetchMessages, fetchCatalog, uploadCatalog, deleteCatalog, fetchSteps, fetchPartners, fetchBenefits, type Product, type ApiOrder, type ApiMessage, type CatalogInfo, API_BASE } from '../../lib/api'
 import { OrderStatus } from '../types'
 import { useTranslation } from 'react-i18next'
+import UploadNote from '../components/UploadNote'
 
 const STATUS: Record<OrderStatus, { label: string; bg: string; color: string; Icon: React.ElementType }> = {
   pending: { label: 'Ожидает', bg: '#fefce8', color: '#a16207', Icon: Clock },
@@ -223,7 +224,7 @@ export default function DashboardPage() {
                 </button>
               </div>
             )}
-            <p className="text-[11.5px] text-slate-400 mt-2">{t('admin.images.catalog_hint')}</p>
+            <div className="mt-3"><UploadNote noteKey="admin.images.catalog" /></div>
             <input
               ref={fileRef}
               type="file"
